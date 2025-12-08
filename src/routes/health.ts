@@ -4,7 +4,7 @@ export const registerHealthRoutes = (app: Elysia) =>
 	app.get(
 		'/health',
 		() => ({
-			status: 'ok',
+			status: 'ok' as const,
 			timestamp: new Date().toISOString(),
 		}),
 		{
