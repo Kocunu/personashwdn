@@ -1,0 +1,4 @@
+entrypoints = ["src/index.ts"]
+
+[test]
+preload = ["src/index.ts"]

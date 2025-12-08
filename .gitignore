@@ -1,0 +1,11 @@
+# Bun & Node modules
+node_modules/
+bun.lockb
+
+# Build artifacts
+dist/
+build/
+
+# Logs & misc
+*.log
+.DS_Store
