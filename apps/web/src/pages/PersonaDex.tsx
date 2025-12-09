@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { SearchControls } from '../components/persona/SearchControls'
 import { PersonaList } from '../components/persona/PersonaList'
+import { PersonaDetailPanel } from '../components/persona/PersonaDetailPanel'
 import { usePersonaStore } from '../state/personaStore'
 
 export function PersonaDexPage() {
@@ -12,7 +13,7 @@ export function PersonaDexPage() {
 
   return (
     <section className="space-y-10 px-8 py-10">
-      <div className="rounded-3xl border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-8 shadow-[0_30px_80px_rgba(5,7,15,0.8)]">
+      <div className="hero-banner spark-field rounded-3xl border border-white/5 bg-gradient-to-br from-midnight/60 via-black/40 to-transparent p-8 shadow-[0_30px_80px_rgba(5,7,15,0.8)]">
         <p className="text-sm uppercase tracking-[0.6em] text-white/60">
           Persona Archive
         </p>
@@ -26,11 +27,12 @@ export function PersonaDexPage() {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
-        <div>
+      <div className="grid gap-6 xl:grid-cols-[320px,1fr,420px]">
+        <div className="space-y-6">
           <SearchControls />
         </div>
         <PersonaList />
+        <PersonaDetailPanel />
       </div>
     </section>
   )

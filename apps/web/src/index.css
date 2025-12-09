@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@400;500;600&family=Cinzel+Decorative:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -27,6 +27,102 @@ body {
 
 .glass-panel {
   @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-lg shadow-lg shadow-black/40;
+}
+
+.hero-banner {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./assets/dark-theme-eyes.png');
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  transform: scale(1.1);
+  animation: heroDrift 18s ease-in-out infinite alternate;
+}
+
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  inset: -20% -10%;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 61, 110, 0.45), transparent 60%),
+    radial-gradient(circle at 70% 40%, rgba(118, 228, 255, 0.25), transparent 55%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.spark-field {
+  position: relative;
+  overflow: hidden;
+}
+
+.spark-field::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.08), transparent 45%),
+    radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.12), transparent 35%);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.diagonal-strike {
+  position: relative;
+  isolation: isolate;
+}
+
+.diagonal-strike::before {
+  content: '';
+  position: absolute;
+  inset: -40% 20%;
+  transform: skewY(-6deg);
+  background: linear-gradient(120deg, rgba(255, 61, 110, 0.4), rgba(255, 200, 87, 0.3));
+  filter: blur(40px);
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.detail-portrait {
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 60%;
+  max-width: 420px;
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.6));
+  animation: floatSlow 12s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.detail-portrait.cool {
+  mix-blend-mode: lighten;
+  opacity: 0.55;
+}
+
+@keyframes heroDrift {
+  from {
+    transform: scale(1.05) translateY(-10px);
+  }
+  to {
+    transform: scale(1.15) translateY(15px);
+  }
+}
+
+@keyframes floatSlow {
+  from {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  to {
+    transform: translateY(-15px) rotate(2deg);
+  }
 }
 
 a {
