@@ -1,5 +1,3 @@
-import homeHero from '../assets/new_home_1920x1080.jpg'
-
 interface HomePageProps {
   goToPersonaDex: () => void
 }
@@ -49,9 +47,6 @@ export function HomePage({ goToPersonaDex }: HomePageProps) {
               Launch PersonaDex
             </button>
           </div>
-        </div>
-        <div className="home-hero__media">
-          <img src={homeHero} alt="Persona party artwork" />
         </div>
       </div>
 
