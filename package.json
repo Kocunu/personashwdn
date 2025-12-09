@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.0",
     "elysia": "^1.0.24"
   },
   "devDependencies": {
