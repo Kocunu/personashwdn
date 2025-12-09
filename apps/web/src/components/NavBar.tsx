@@ -1,10 +1,17 @@
-const NAV_ITEMS = [
-  { label: 'Home', href: '#home', isActive: false },
-  { label: 'PersonaDex', href: '#personadex', isActive: true },
-  { label: 'Battles (soon)', href: '#battles', isActive: false },
+export type NavKey = 'home' | 'personadex' | 'battles'
+
+interface NavBarProps {
+  active: NavKey
+  onNavigate: (key: NavKey) => void
+}
+
+const NAV_ITEMS: { label: string; key: NavKey; disabled?: boolean }[] = [
+  { label: 'Home', key: 'home' },
+  { label: 'PersonaDex', key: 'personadex' },
+  { label: 'Battles (soon)', key: 'battles', disabled: true },
 ]
 
-export function NavBar() {
+export function NavBar({ active, onNavigate }: NavBarProps) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 px-8 py-6">
       <div>
@@ -14,17 +21,21 @@ export function NavBar() {
 
       <nav className="flex flex-wrap items-center gap-3">
         {NAV_ITEMS.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
+          <button
+            key={item.key}
+            type="button"
+            onClick={() => {
+              if (!item.disabled) onNavigate(item.key)
+            }}
+            disabled={item.disabled}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              item.isActive
+              active === item.key
                 ? 'bg-neon/20 text-neon shadow-[0_0_30px_rgba(118,228,255,0.45)]'
                 : 'text-white/70 hover:text-white'
-            }`}
+            } ${item.disabled ? 'cursor-not-allowed opacity-50' : ''}`}
           >
             {item.label}
-          </a>
+          </button>
         ))}
       </nav>
     </header>
