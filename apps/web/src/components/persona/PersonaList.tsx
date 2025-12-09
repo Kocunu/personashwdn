@@ -5,13 +5,11 @@ const formatArcana = (arcana?: string) =>
   arcana?.replace('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase()) ?? ''
 
 export function PersonaList() {
-  const { personas, isLoading, error, selectedId, selectPersona } = usePersonaStore((state) => ({
-    personas: state.personas,
-    isLoading: state.isLoading,
-    error: state.error,
-    selectedId: state.selectedId,
-    selectPersona: state.selectPersona,
-  }))
+  const personas = usePersonaStore((state) => state.personas)
+  const isLoading = usePersonaStore((state) => state.isLoading)
+  const error = usePersonaStore((state) => state.error)
+  const selectedId = usePersonaStore((state) => state.selectedId)
+  const selectPersona = usePersonaStore((state) => state.selectPersona)
 
   if (isLoading) {
     return (

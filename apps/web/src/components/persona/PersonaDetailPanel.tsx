@@ -1,18 +1,13 @@
 import { useMemo } from 'react'
 import { usePersonaStore } from '../../state/personaStore'
 import { getPersonaTheme } from '../../lib/personaThemes'
-import leaningPortrait from '../../assets/girl-leaning-1600x900.jpg'
-import lookupPortrait from '../../assets/loopup-bluetone-2048-1152.jpg'
-
 const statOrder = ['strength', 'magic', 'endurance', 'agility', 'luck'] as const
 
 export function PersonaDetailPanel() {
-  const { personas, selectedId, isDetailOpen, closeDetail } = usePersonaStore((state) => ({
-    personas: state.personas,
-    selectedId: state.selectedId,
-    isDetailOpen: state.isDetailOpen,
-    closeDetail: state.closeDetail,
-  }))
+  const personas = usePersonaStore((state) => state.personas)
+  const selectedId = usePersonaStore((state) => state.selectedId)
+  const isDetailOpen = usePersonaStore((state) => state.isDetailOpen)
+  const closeDetail = usePersonaStore((state) => state.closeDetail)
 
   const persona = useMemo(
     () => personas.find((candidate) => candidate.id === selectedId),
@@ -36,10 +31,6 @@ export function PersonaDetailPanel() {
 
   const theme = getPersonaTheme(persona.arcana)
 
-  const coolArcana = ['fool', 'star', 'moon', 'priestess', 'hermit']
-  const portraitSrc = coolArcana.includes(persona.arcana ?? '') ? lookupPortrait : leaningPortrait
-  const portraitClass = coolArcana.includes(persona.arcana ?? '') ? 'detail-portrait cool' : 'detail-portrait'
-
   const panelBody = (
     <section
       className="relative overflow-hidden rounded-3xl border border-white/10 p-8 text-white shadow-[0_40px_120px_rgba(0,0,0,0.55)]"
@@ -54,7 +45,6 @@ export function PersonaDetailPanel() {
       >
         Close
       </button>
-      <img src={portraitSrc} alt="" aria-hidden className={portraitClass} />
       <div className="absolute inset-y-0 left-6 hidden w-[2px] bg-white/20 md:block" />
       <div className="flex flex-col gap-8 md:flex-row">
         <div className="md:w-1/3">

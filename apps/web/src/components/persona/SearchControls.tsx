@@ -26,14 +26,10 @@ const ARCANA_OPTIONS = [
 ]
 
 export function SearchControls() {
-  const { filters, setFilters, loadPersonas, isLoading } = usePersonaStore(
-    (state) => ({
-      filters: state.filters,
-      setFilters: state.setFilters,
-      loadPersonas: state.loadPersonas,
-      isLoading: state.isLoading,
-    }),
-  )
+  const filters = usePersonaStore((state) => state.filters)
+  const setFilters = usePersonaStore((state) => state.setFilters)
+  const loadPersonas = usePersonaStore((state) => state.loadPersonas)
+  const isLoading = usePersonaStore((state) => state.isLoading)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()

@@ -43,6 +43,7 @@ export function PersonaDexPage() {
   return (
     <section className="space-y-10 px-8 py-10">
       <div className="hero-banner spark-field rounded-3xl border border-white/5 bg-gradient-to-br from-midnight/60 via-black/40 to-transparent p-8 shadow-[0_30px_80px_rgba(5,7,15,0.8)]">
+        <div className="hero-banner__content space-y-4">
         <p className="text-sm uppercase tracking-[0.6em] text-white/60">
           Persona Archive
         </p>
@@ -54,6 +55,8 @@ export function PersonaDexPage() {
           Every response is served straight from our Bun/Elysia backend, making this UI a live preview
           of the data set that will power the future battle engine.
         </p>
+        </div>
+        <div className="hero-figure" aria-hidden />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[320px,1fr,420px]">
