@@ -7,15 +7,21 @@ import lookupPortrait from '../../assets/loopup-bluetone-2048-1152.jpg'
 const statOrder = ['strength', 'magic', 'endurance', 'agility', 'luck'] as const
 
 export function PersonaDetailPanel() {
-  const { personas, selectedId } = usePersonaStore((state) => ({
+  const { personas, selectedId, isDetailOpen, closeDetail } = usePersonaStore((state) => ({
     personas: state.personas,
     selectedId: state.selectedId,
+    isDetailOpen: state.isDetailOpen,
+    closeDetail: state.closeDetail,
   }))
 
   const persona = useMemo(
     () => personas.find((candidate) => candidate.id === selectedId),
     [personas, selectedId],
   )
+
+  if (!persona && !isDetailOpen) {
+    return null
+  }
 
   if (!persona) {
     return (
@@ -34,13 +40,20 @@ export function PersonaDetailPanel() {
   const portraitSrc = coolArcana.includes(persona.arcana ?? '') ? lookupPortrait : leaningPortrait
   const portraitClass = coolArcana.includes(persona.arcana ?? '') ? 'detail-portrait cool' : 'detail-portrait'
 
-  return (
+  const panelBody = (
     <section
       className="relative overflow-hidden rounded-3xl border border-white/10 p-8 text-white shadow-[0_40px_120px_rgba(0,0,0,0.55)]"
       style={{
         background: `radial-gradient(circle at 15% 20%, ${theme.primary}33, transparent 55%), linear-gradient(125deg, ${theme.secondary}, rgba(5,7,15,0.95))`,
       }}
     >
+      <button
+        type="button"
+        onClick={closeDetail}
+        className="absolute right-4 top-4 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-[0.3em] text-white/70 transition hover:border-white/40"
+      >
+        Close
+      </button>
       <img src={portraitSrc} alt="" aria-hidden className={portraitClass} />
       <div className="absolute inset-y-0 left-6 hidden w-[2px] bg-white/20 md:block" />
       <div className="flex flex-col gap-8 md:flex-row">
@@ -136,5 +149,35 @@ export function PersonaDetailPanel() {
         </div>
       </div>
     </section>
+  )
+
+  const drawerContent = (
+    <div
+      className={`absolute inset-x-0 bottom-0 transform transition duration-500 ${
+        isDetailOpen ? 'translate-y-0' : 'translate-y-full'
+      }`}
+    >
+      {panelBody}
+    </div>
+  )
+
+  return (
+    <>
+      <div
+        className={`hidden md:block transition duration-500 ${
+          isDetailOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-3 opacity-0'
+        }`}
+      >
+        {panelBody}
+      </div>
+
+      <div
+        className={`fixed inset-0 z-40 bg-black/70 p-4 transition md:hidden ${
+          isDetailOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      >
+        {drawerContent}
+      </div>
+    </>
   )
 }

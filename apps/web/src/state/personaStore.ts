@@ -8,9 +8,15 @@ interface PersonaState {
   error: string | null
   filters: PersonaFilters
   selectedId: string | null
+  isDetailOpen: boolean
   setFilters: (filters: Partial<PersonaFilters>) => void
   loadPersonas: () => Promise<void>
   selectPersona: (id: string | null) => void
+  selectNextPersona: () => void
+  selectPreviousPersona: () => void
+  openDetail: () => void
+  closeDetail: () => void
+  toggleDetail: () => void
 }
 
 export const usePersonaStore = create<PersonaState>((set, get) => ({
@@ -24,6 +30,7 @@ export const usePersonaStore = create<PersonaState>((set, get) => ({
     maxLevel: undefined,
   },
   selectedId: null,
+  isDetailOpen: true,
   setFilters: (newFilters) =>
     set((state) => ({
       filters: { ...state.filters, ...newFilters },
@@ -43,5 +50,29 @@ export const usePersonaStore = create<PersonaState>((set, get) => ({
       })
     }
   },
-  selectPersona: (id) => set({ selectedId: id }),
+  selectPersona: (id) =>
+    set({
+      selectedId: id,
+      isDetailOpen: true,
+    }),
+  selectNextPersona: () =>
+    set((state) => {
+      if (!state.personas.length) return state
+      const currentIndex = state.personas.findIndex((p) => p.id === state.selectedId)
+      const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % state.personas.length : 0
+      return { selectedId: state.personas[nextIndex].id, isDetailOpen: true }
+    }),
+  selectPreviousPersona: () =>
+    set((state) => {
+      if (!state.personas.length) return state
+      const currentIndex = state.personas.findIndex((p) => p.id === state.selectedId)
+      const prevIndex =
+        currentIndex >= 0
+          ? (currentIndex - 1 + state.personas.length) % state.personas.length
+          : state.personas.length - 1
+      return { selectedId: state.personas[prevIndex].id, isDetailOpen: true }
+    }),
+  openDetail: () => set({ isDetailOpen: true }),
+  closeDetail: () => set({ isDetailOpen: false }),
+  toggleDetail: () => set((state) => ({ isDetailOpen: !state.isDetailOpen })),
 }))

@@ -6,10 +6,39 @@ import { usePersonaStore } from '../state/personaStore'
 
 export function PersonaDexPage() {
   const loadPersonas = usePersonaStore((state) => state.loadPersonas)
+  const selectNextPersona = usePersonaStore((state) => state.selectNextPersona)
+  const selectPreviousPersona = usePersonaStore((state) => state.selectPreviousPersona)
+  const openDetail = usePersonaStore((state) => state.openDetail)
+  const closeDetail = usePersonaStore((state) => state.closeDetail)
+  const toggleDetail = usePersonaStore((state) => state.toggleDetail)
+  const isDetailOpen = usePersonaStore((state) => state.isDetailOpen)
 
   useEffect(() => {
     void loadPersonas()
   }, [loadPersonas])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+        selectNextPersona()
+        openDetail()
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        selectPreviousPersona()
+        openDetail()
+      } else if (event.key === 'Enter') {
+        openDetail()
+      } else if (event.key === 'Escape') {
+        closeDetail()
+      } else if (event.key.toLowerCase() === 'd') {
+        toggleDetail()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectNextPersona, selectPreviousPersona, openDetail, closeDetail, toggleDetail])
 
   return (
     <section className="space-y-10 px-8 py-10">
@@ -32,7 +61,18 @@ export function PersonaDexPage() {
           <SearchControls />
         </div>
         <PersonaList />
-        <PersonaDetailPanel />
+        <div className="space-y-4">
+          {!isDetailOpen && (
+            <button
+              type="button"
+              onClick={openDetail}
+              className="w-full rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white/70 transition hover:border-neon/40 hover:text-white"
+            >
+              Open Dossier
+            </button>
+          )}
+          <PersonaDetailPanel />
+        </div>
       </div>
     </section>
   )
