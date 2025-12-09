@@ -56,7 +56,6 @@ export function PersonaDexPage() {
           of the data set that will power the future battle engine.
         </p>
         </div>
-        <div className="hero-figure" aria-hidden />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[320px,1fr,420px]">
