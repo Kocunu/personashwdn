@@ -25,6 +25,7 @@ export enum Arcana {
 	Moon = 'moon',
 	Sun = 'sun',
 	Judgement = 'judgement',
+	Aeon = 'aeon',
 	World = 'world',
 }
 
@@ -51,6 +52,7 @@ export interface Persona {
 	arcana: Arcana;
 	race?: string;
 	description?: string;
+	image?: string;
 	stats: PersonaStats;
 	affinities: ElementAffinityMap;
 	skills: PersonaSkillSlot[];

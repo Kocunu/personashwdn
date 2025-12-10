@@ -30,8 +30,9 @@ type GeneratedPersona = {
 };
 
 const resolveArcana = (arcana: string): Arcana | undefined => {
-	const key = arcana.toLowerCase().replace(/\s+/g, '_') as keyof typeof Arcana;
-	return Arcana[key];
+	const normalized = arcana.toLowerCase().replace(/\s+/g, '_');
+	if (normalized === 'hanged') return Arcana.HangedMan;
+	return Arcana[normalized as keyof typeof Arcana];
 };
 
 const elementMap: Record<string, Element> = {
@@ -101,6 +102,7 @@ const loadGeneratedPersonas = (): Persona[] => {
 				name: p.name,
 				arcana,
 				description: p.description,
+				image: p.image,
 				stats,
 				affinities: mapAffinities(p.affinities),
 				skills: [],
