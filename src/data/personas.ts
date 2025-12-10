@@ -1,92 +1,117 @@
-import {
-	Element,
-	ElementAffinityMap,
-	Persona,
-	Arcana,
-	Affinity,
-} from '@/domain';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { Element, ElementAffinityMap, Persona, Arcana, Affinity } from '@/domain';
 
-const makeAffinities = (affinities: ElementAffinityMap): ElementAffinityMap =>
-	affinities;
+type GeneratedAffinityBuckets = {
+	weak: string[];
+	resists: string[];
+	reflects: string[];
+	absorbs: string[];
+	nullifies: string[];
+};
 
-export const personas: Persona[] = [
-	{
-		id: 'pixie',
-		name: 'Pixie',
-		arcana: Arcana.Lovers,
-		description: 'A playful fairy often aiding new Persona users.',
-		stats: {
-			level: 2,
-			hp: 60,
-			sp: 40,
-			strength: 3,
-			magic: 6,
-			endurance: 3,
-			agility: 7,
-			luck: 5,
-		},
-		affinities: makeAffinities({
-			[Element.Electric]: Affinity.Weak,
-			[Element.Wind]: Affinity.Resist,
-		}),
-		skills: [
-			{ skillId: 'zio', learnLevel: 2 },
-			{ skillId: 'dia', learnLevel: 3 },
-		],
-		sourceGame: 'Persona 5',
-	},
-	{
-		id: 'jack_frost',
-		name: 'Jack Frost',
-		arcana: Arcana.Magician,
-		description: "The series' iconic snow fairy.",
-		stats: {
-			level: 11,
-			hp: 180,
-			sp: 90,
-			strength: 9,
-			magic: 14,
-			endurance: 10,
-			agility: 12,
-			luck: 11,
-		},
-		affinities: makeAffinities({
-			[Element.Fire]: Affinity.Weak,
-			[Element.Ice]: Affinity.Resist,
-		}),
-		skills: [
-			{ skillId: 'bufu', learnLevel: 11 },
-			{ skillId: 'tarukaja', learnLevel: 12 },
-		],
-		sourceGame: 'Persona 5',
-	},
-	{
-		id: 'ara_mitama',
-		name: 'Ara Mitama',
-		arcana: Arcana.Chariot,
-		description: 'A mighty spirit embodying courage.',
-		stats: {
-			level: 15,
-			hp: 260,
-			sp: 100,
-			strength: 17,
-			magic: 10,
-			endurance: 16,
-			agility: 12,
-			luck: 10,
-		},
-		affinities: makeAffinities({
-			[Element.Fire]: Affinity.Resist,
-			[Element.Electric]: Affinity.Weak,
-			[Element.Physical]: Affinity.Resist,
-		}),
-		skills: [
-			{ skillId: 'agi', learnLevel: 15 },
-			{ skillId: 'tarukaja', learnLevel: 17 },
-		],
-		sourceGame: 'Persona 5',
-	},
-];
+type GeneratedPersona = {
+	id: number;
+	slug: string;
+	name: string;
+	arcana: string;
+	level: number;
+	description: string;
+	image: string;
+	stats: {
+		strength: number;
+		magic: number;
+		endurance: number;
+		agility: number;
+		luck: number;
+	};
+	affinities: GeneratedAffinityBuckets;
+	dlc: boolean;
+};
+
+const resolveArcana = (arcana: string): Arcana | undefined => {
+	const key = arcana.toLowerCase().replace(/\s+/g, '_') as keyof typeof Arcana;
+	return Arcana[key];
+};
+
+const elementMap: Record<string, Element> = {
+	fire: Element.Fire,
+	ice: Element.Ice,
+	electric: Element.Electric,
+	elec: Element.Electric,
+	wind: Element.Wind,
+	psy: Element.Psy,
+	nuclear: Element.Nuclear,
+	nuke: Element.Nuclear,
+	bless: Element.Bless,
+	light: Element.Bless,
+	curse: Element.Curse,
+	dark: Element.Curse,
+	gun: Element.Gun,
+	slash: Element.Physical,
+	strike: Element.Physical,
+	pierce: Element.Physical,
+	physical: Element.Physical,
+	almighty: Element.Almighty,
+};
+
+const mapAffinities = (aff: GeneratedAffinityBuckets): ElementAffinityMap => {
+	const result: ElementAffinityMap = {};
+	const apply = (elems: string[], affinity: Affinity) => {
+		for (const raw of elems) {
+			const mapped = elementMap[raw.trim().toLowerCase()];
+			if (mapped) result[mapped] = affinity;
+		}
+	};
+	apply(aff.nullifies, Affinity.Null);
+	apply(aff.absorbs, Affinity.Drain);
+	apply(aff.reflects, Affinity.Repel);
+	apply(aff.resists, Affinity.Resist);
+	apply(aff.weak, Affinity.Weak);
+	return result;
+};
+
+const computeHp = (level: number, strength: number, endurance: number) =>
+	Math.max(1, Math.round(level * 4 + strength * 6 + endurance * 5));
+const computeSp = (level: number, magic: number, agility: number) =>
+	Math.max(1, Math.round(level * 3 + magic * 7 + agility * 3));
+
+const loadGeneratedPersonas = (): Persona[] => {
+	const dataPath = fileURLToPath(new URL('../data/generated/personas.json', import.meta.url));
+	const raw = readFileSync(dataPath, 'utf8');
+	const parsed = JSON.parse(raw) as GeneratedPersona[];
+
+	return parsed
+		.map((p) => {
+			const arcana = resolveArcana(p.arcana);
+			if (!arcana) return null;
+			const stats = {
+				level: p.level,
+				hp: computeHp(p.level, p.stats.strength, p.stats.endurance),
+				sp: computeSp(p.level, p.stats.magic, p.stats.agility),
+				strength: p.stats.strength,
+				magic: p.stats.magic,
+				endurance: p.stats.endurance,
+				agility: p.stats.agility,
+				luck: p.stats.luck,
+			};
+
+			return {
+				id: String(p.slug),
+				name: p.name,
+				arcana,
+				description: p.description,
+				stats,
+				affinities: mapAffinities(p.affinities),
+				skills: [],
+				sourceGame: p.dlc ? 'DLC' : undefined,
+				race: undefined,
+			} satisfies Persona;
+		})
+		.filter(Boolean) as Persona[];
+};
+
+export const personas: Persona[] = loadGeneratedPersonas();
 
 export interface PersonaFilter {
 	search?: string;
