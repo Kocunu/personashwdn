@@ -30,19 +30,19 @@ export const usePersonaStore = create<PersonaState>((set, get) => ({
     maxLevel: undefined,
   },
   selectedId: null,
-  isDetailOpen: true,
+  isDetailOpen: false,
   setFilters: (newFilters) =>
     set((state) => ({
       filters: { ...state.filters, ...newFilters },
+      selectedId: null,
+      isDetailOpen: false,
     })),
   loadPersonas: async () => {
-    const { filters, selectedId } = get()
+    const { filters } = get()
     set({ isLoading: true, error: null })
     try {
       const data = await fetchPersonas(filters)
-      const nextSelected =
-        data.find((persona) => persona.id === selectedId)?.id ?? data[0]?.id ?? null
-      set({ personas: data, isLoading: false, selectedId: nextSelected })
+      set({ personas: data, isLoading: false, selectedId: null, isDetailOpen: false })
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Unknown error',
