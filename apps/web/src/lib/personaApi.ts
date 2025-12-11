@@ -20,6 +20,7 @@ export interface Persona {
   name: string
   arcana: string
   description?: string
+  image?: string
   sourceGame?: string
   race?: string
   stats: PersonaStats
