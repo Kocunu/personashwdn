@@ -6,6 +6,7 @@ const personaSchema = t.Object({
 	id: t.String(),
 	name: t.String(),
 	arcana: t.Enum(Arcana),
+	image: t.Optional(t.String()),
 	stats: t.Object({
 		level: t.Number(),
 		hp: t.Number(),

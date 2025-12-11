@@ -32,7 +32,8 @@ type GeneratedPersona = {
 const resolveArcana = (arcana: string): Arcana | undefined => {
 	const normalized = arcana.toLowerCase().replace(/\s+/g, '_');
 	if (normalized === 'hanged') return Arcana.HangedMan;
-	return Arcana[normalized as keyof typeof Arcana];
+	const entry = Object.values(Arcana).find((value) => value === normalized);
+	return entry as Arcana | undefined;
 };
 
 const elementMap: Record<string, Element> = {
