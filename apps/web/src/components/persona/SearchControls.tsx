@@ -62,82 +62,86 @@ export function SearchControls() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-md border border-white/10 bg-black/20 px-3 py-2"
-    >
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="rounded-md border border-white/15 bg-[#10192c]/80 p-3 text-white shadow-[0_10px_35px_rgba(0,0,0,0.45)]">
+      <div className="flex items-center gap-2 border-b border-white/10 pb-2 text-xs uppercase tracking-[0.35em] text-white/60">
+        <span className="rounded-sm bg-white/10 px-2 py-1 text-white">Search</span>
+        <span className="rounded-sm px-2 py-1 text-white/40">Personas</span>
+        <span className="rounded-sm px-2 py-1 text-white/40">Moves</span>
+      </div>
+      <form onSubmit={handleSubmit} className="mt-3 space-y-3">
         <input
           type="text"
           value={filters.search ?? ''}
           onChange={(event) => setFilters({ search: event.target.value })}
-          placeholder="Search Personas by name, arcana, or level..."
-          className="min-w-[220px] flex-1 rounded border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+          placeholder="Search Personas by name, arcana, or keyword…"
+          className="w-full rounded border border-white/15 bg-black/30 px-4 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
         />
-
-        <select
-          value={filters.arcana ?? ''}
-          onChange={(event) =>
-            setFilters({
-              arcana: event.target.value || undefined,
-            })
-          }
-          className="w-40 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white focus:border-neon/60 focus:outline-none"
-        >
-          <option value="">Any Arcana</option>
-          {ARCANA_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option.replace('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase())}
-            </option>
-          ))}
-        </select>
-
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min={1}
-            max={99}
-            value={filters.minLevel ?? ''}
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <select
+            value={filters.arcana ?? ''}
             onChange={(event) =>
               setFilters({
-                minLevel: event.target.value ? Number.parseInt(event.target.value, 10) : undefined,
+                arcana: event.target.value || undefined,
               })
             }
-            placeholder="Min Lv"
-            className="w-20 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
-          />
-          <input
-            type="number"
-            min={1}
-            max={99}
-            value={filters.maxLevel ?? ''}
-            onChange={(event) =>
-              setFilters({
-                maxLevel: event.target.value ? Number.parseInt(event.target.value, 10) : undefined,
-              })
-            }
-            placeholder="Max Lv"
-            className="w-20 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
-          />
-        </div>
+            className="w-44 rounded border border-white/15 bg-black/30 px-2.5 py-2 text-white focus:border-neon/60 focus:outline-none"
+          >
+            <option value="">Any Arcana</option>
+            {ARCANA_OPTIONS.map((option) => (
+              <option key={option} value={option}>
+                {option.replace('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase())}
+              </option>
+            ))}
+          </select>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="rounded border border-neon/60 bg-neon/20 px-4 py-2 text-sm font-semibold text-neon transition hover:bg-neon/30 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoading ? 'Loading…' : 'Search'}
-          </button>
-          <button
-            type="button"
-            onClick={handleReset}
-            className="rounded border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40 hover:text-white"
-          >
-            Reset
-          </button>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={1}
+              max={99}
+              value={filters.minLevel ?? ''}
+              onChange={(event) =>
+                setFilters({
+                  minLevel: event.target.value ? Number.parseInt(event.target.value, 10) : undefined,
+                })
+              }
+              placeholder="Min Lv"
+              className="w-24 rounded border border-white/15 bg-black/30 px-3 py-2 text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+            />
+            <span className="text-white/50">-</span>
+            <input
+              type="number"
+              min={1}
+              max={99}
+              value={filters.maxLevel ?? ''}
+              onChange={(event) =>
+                setFilters({
+                  maxLevel: event.target.value ? Number.parseInt(event.target.value, 10) : undefined,
+                })
+              }
+              placeholder="Max Lv"
+              className="w-24 rounded border border-white/15 bg-black/30 px-3 py-2 text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+            />
+          </div>
+
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="rounded border border-neon/60 bg-neon/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-neon transition hover:bg-neon/30 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isLoading ? 'Loading…' : 'Search'}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="rounded border border-white/25 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:text-white"
+            >
+              Reset
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   )
 }

@@ -3,7 +3,15 @@ import { usePersonaStore } from '../../state/personaStore'
 import { getPersonaTheme } from '../../lib/personaThemes'
 import { affinityLabels } from '../../lib/affinityLabels'
 
-const statOrder = ['strength', 'magic', 'endurance', 'agility', 'luck'] as const
+const statTable = [
+  { key: 'hp', label: 'HP' },
+  { key: 'sp', label: 'SP' },
+  { key: 'strength', label: 'STR' },
+  { key: 'magic', label: 'MAG' },
+  { key: 'endurance', label: 'END' },
+  { key: 'agility', label: 'AGI' },
+  { key: 'luck', label: 'LUC' },
+] as const
 const formatArcana = (arcana?: string) =>
   arcana?.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) ?? ''
 const formatElement = (element: string) =>
@@ -33,150 +41,155 @@ export function PersonaDetailPanel({ renderDesktop = true }: PersonaDetailPanelP
     [personas, selectedId],
   )
 
-  if (!isDetailOpen) return null
-  if (!persona) return null
+  if (renderDesktop === false && !isDetailOpen) return null
+  const theme = persona ? getPersonaTheme(persona.arcana) : null
 
-  const theme = getPersonaTheme(persona.arcana)
-
-  const panelBody = (
-    <section className="relative space-y-4 text-white">
-      <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-3">
-        <div className="min-w-0">
-          <h2 className="font-display text-3xl leading-tight text-white">{persona.name}</h2>
-          <div className="mt-2 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.28em] text-white/70">
-            <span className="rounded border border-white/15 px-2 py-1">{formatArcana(persona.arcana)}</span>
-            <span className="rounded border border-white/15 px-2 py-1">Lv {persona.stats.level}</span>
+  const detailContent = persona ? (
+    <section className="flex h-full flex-col gap-4 text-white">
+      <div className="flex items-start justify-between gap-3 rounded border border-white/15 bg-[#121e30] p-3">
+        <div className="min-w-0 space-y-1">
+          <p className="text-xs uppercase tracking-[0.35em] text-white/50">{formatArcana(persona.arcana)}</p>
+          <h2 className="font-display text-3xl text-white">{persona.name}</h2>
+          <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.25em] text-white/60">
+            <span className="rounded border border-white/20 px-2 py-0.5">Lv {persona.stats.level}</span>
             {persona.race ? (
-              <span className="rounded border border-white/15 px-2 py-1 text-white/60">{persona.race}</span>
+              <span className="rounded border border-white/20 px-2 py-0.5 text-white/70">{persona.race}</span>
             ) : null}
-            <span className="rounded border border-white/15 px-2 py-1 text-white/60">HP {persona.stats.hp}</span>
-            <span className="rounded border border-white/15 px-2 py-1 text-white/60">SP {persona.stats.sp}</span>
+            <span className="rounded border border-white/20 px-2 py-0.5 text-white/70">HP {persona.stats.hp}</span>
+            <span className="rounded border border-white/20 px-2 py-0.5 text-white/70">SP {persona.stats.sp}</span>
           </div>
         </div>
         <button
           type="button"
           onClick={closeDetail}
-          className="shrink-0 rounded border border-white/20 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-white/70 transition hover:border-white/40"
+          className="rounded border border-white/20 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-white/70 transition hover:border-white/40"
         >
           Close
         </button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.25fr,0.75fr]">
-        <div className="grid gap-4">
-          <div className="rounded border border-white/10 bg-black/20 p-3">
-            <h3 className="text-[11px] uppercase tracking-[0.3em] text-white/60">Parameters</h3>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {statOrder.map((stat) => (
-                <div
-                  key={stat}
-                  className="grid grid-cols-[44px,1fr,40px] items-center gap-2 rounded bg-black/25 px-2 py-2 text-[12px]"
-                >
-                  <span className="text-white/70">{stat.slice(0, 3).toUpperCase()}</span>
-                  <div className="relative h-2.5 overflow-hidden rounded bg-white/10">
-                    <div
-                      className="absolute inset-y-0 left-0 rounded"
-                      style={{
-                        width: `${Math.min(100, persona.stats[stat] * 4)}%`,
-                        background: `linear-gradient(90deg, ${theme.primary}, ${theme.accent})`,
-                      }}
-                    />
-                  </div>
-                  <span className="text-right font-mono text-xs text-white">{persona.stats[stat]}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      <div className="grid gap-4 lg:grid-cols-[1.15fr,0.85fr]">
+        <div className="space-y-4">
+          <section className="rounded border border-white/12 bg-[#111a2b]/90">
+            <header className="border-b border-white/10 px-3 py-2 text-xs uppercase tracking-[0.35em] text-white/60">
+              Base Parameters
+            </header>
+            <table className="w-full text-sm text-white/80">
+              <tbody>
+                {statTable.map((stat) => (
+                  <tr key={stat.key} className="border-b border-white/5 last:border-b-0">
+                    <td className="px-3 py-2 font-semibold uppercase tracking-[0.25em] text-white/70">{stat.label}</td>
+                    <td className="px-3 py-2">
+                      <div className="relative h-2.5 overflow-hidden rounded bg-white/10">
+                        <div
+                          className="absolute inset-y-0 left-0 rounded"
+                          style={{
+                            width: `${Math.min(100, (persona.stats[stat.key as keyof typeof persona.stats] as number) * 1.5)}%`,
+                            background: `linear-gradient(90deg, ${theme?.primary ?? '#6dd5ed'}, ${theme?.accent ?? '#2193b0'})`,
+                          }}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-3 py-2 text-right font-mono text-xs text-white">
+                      {persona.stats[stat.key as keyof typeof persona.stats]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
 
-          <div className="rounded border border-white/10 bg-black/20 p-3">
-            <h3 className="text-[11px] uppercase tracking-[0.3em] text-white/60">Affinities</h3>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] sm:grid-cols-3">
-              {Object.entries(persona.affinities).map(([element, affinity]) => {
-                const normalized = affinity.toLowerCase()
-                const label =
-                  affinityLabels[normalized] ?? affinity.replace(/\b\w/g, (char) => char.toUpperCase())
-                const tone = affinityTone[normalized] ?? affinityTone.neutral
-                return (
-                  <div
-                    key={element}
-                    className={`flex items-center justify-between gap-2 rounded border px-2 py-1.5 ${tone}`}
-                  >
-                    <span className="text-[10px] uppercase tracking-[0.3em] opacity-80">
-                      {formatElement(element)}
-                    </span>
-                    <span className="font-medium">{label}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+          <section className="rounded border border-white/12 bg-[#111a2b]/90">
+            <header className="border-b border-white/10 px-3 py-2 text-xs uppercase tracking-[0.35em] text-white/60">
+              Affinities
+            </header>
+            <table className="w-full text-sm text-white/80">
+              <tbody>
+                {Object.entries(persona.affinities).map(([element, affinity]) => {
+                  const normalized = affinity.toLowerCase()
+                  const label =
+                    affinityLabels[normalized] ?? affinity.replace(/\b\w/g, (char) => char.toUpperCase())
+                  const tone = affinityTone[normalized] ?? affinityTone.neutral
+                  return (
+                    <tr key={element} className="border-b border-white/5 last:border-b-0">
+                      <td className="px-3 py-2 text-[11px] uppercase tracking-[0.3em] text-white/60">
+                        {formatElement(element)}
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className={`rounded border px-2 py-1 text-xs font-semibold ${tone}`}>{label}</span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </section>
 
           {persona.skills.length > 0 ? (
-            <details className="rounded border border-white/10 bg-black/15">
-              <summary className="cursor-pointer select-none px-3 py-2 text-[11px] uppercase tracking-[0.3em] text-white/70">
+            <section className="rounded border border-white/12 bg-[#111a2b]/90">
+              <header className="border-b border-white/10 px-3 py-2 text-xs uppercase tracking-[0.35em] text-white/60">
                 Skills
-              </summary>
-              <div className="border-t border-white/10">
-                {persona.skills.map((skill, idx) => (
-                  <div
-                    key={skill.skillId}
-                    className={`flex items-center justify-between px-3 py-2 text-[12px] ${
-                      idx % 2 === 0 ? 'bg-white/5' : 'bg-white/0'
-                    }`}
-                  >
-                    <span className="font-medium text-white/90">{skill.skillId}</span>
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/55">
-                      Lv {skill.learnLevel ?? '—'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </details>
+              </header>
+              <table className="w-full text-sm text-white/80">
+                <thead>
+                  <tr className="text-xs uppercase tracking-[0.3em] text-white/50">
+                    <th className="px-3 py-2 text-left font-normal">Skill</th>
+                    <th className="px-3 py-2 text-left font-normal">Learn Lv</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {persona.skills.map((skill, idx) => (
+                    <tr
+                      key={skill.skillId}
+                      className={idx % 2 === 0 ? 'bg-white/5' : ''}
+                    >
+                      <td className="px-3 py-2 font-medium text-white">{skill.skillId}</td>
+                      <td className="px-3 py-2 text-xs uppercase tracking-[0.2em] text-white/70">
+                        {skill.learnLevel ?? '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
           ) : null}
         </div>
 
-        <div className="space-y-3">
-          <div className="overflow-hidden rounded border border-white/10 bg-black/10">
+        <div className="space-y-4">
+          <section className="rounded border border-white/12 bg-[#111a2b]/90 p-3">
             {persona.image ? (
-              <img
-                src={persona.image}
-                alt={persona.name}
-                className="h-56 w-full object-contain"
-                loading="lazy"
-              />
+              <img src={persona.image} alt={persona.name} className="mx-auto max-h-64 object-contain" loading="lazy" />
             ) : (
-              <div className="flex h-56 items-center justify-center text-sm text-white/40">No image</div>
+              <div className="flex h-48 items-center justify-center text-sm text-white/40">No image</div>
             )}
-          </div>
+          </section>
           {persona.description ? (
-            <p className="text-sm leading-relaxed text-white/70 line-clamp-6">{persona.description}</p>
+            <section className="rounded border border-white/12 bg-[#111a2b]/90 p-3 text-sm text-white/70">
+              {persona.description}
+            </section>
           ) : null}
         </div>
       </div>
     </section>
-  )
-
-  const drawerContent = (
-    <div
-      className={`absolute inset-x-0 bottom-0 transform transition duration-500 ${
-        isDetailOpen ? 'translate-y-0' : 'translate-y-full'
-      }`}
-    >
-      {panelBody}
+  ) : (
+    <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-2 text-center text-white/60">
+      <p className="text-xs uppercase tracking-[0.4em] text-white/40">PersonaDex</p>
+      <p>Select a persona from the list to view details.</p>
     </div>
   )
 
-  return (
-    <>
-      {renderDesktop ? <div className="hidden md:block">{panelBody}</div> : null}
-
+  if (!renderDesktop) {
+    if (!isDetailOpen || !persona) return null
+    return (
       <div
         className={`fixed inset-0 z-40 bg-black/70 p-4 transition md:hidden ${
           isDetailOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
-        <div className="rounded-2xl border border-white/10 bg-[#0c111a] p-4 shadow-2xl">{drawerContent}</div>
+        <div className="rounded-2xl border border-white/10 bg-[#0c111a] p-4 shadow-2xl">{detailContent}</div>
       </div>
-    </>
-  )
+    )
+  }
+
+  return detailContent
 }

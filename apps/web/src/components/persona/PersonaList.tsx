@@ -48,78 +48,85 @@ export function PersonaList() {
   ] as const
 
   return (
-    <div className="h-full overflow-auto rounded-md border border-white/10 bg-black/10">
-      <div className="sticky top-0 z-10 grid grid-cols-[52px,1.2fr,110px,60px,1.1fr,1fr] items-center gap-3 border-b border-white/10 bg-[#0b0f16]/90 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60 backdrop-blur">
-        <span className="text-center">Icon</span>
-        <span>Persona</span>
-        <span className="text-center">Arcana</span>
-        <span className="text-center">Lv</span>
-        <span>Affinities</span>
-        <div className="grid grid-cols-6 gap-2 text-center">
+    <div className="h-full overflow-auto rounded-md border border-white/10 bg-[#0b0f16]/60">
+      <div className="min-w-[1040px]">
+        <div className="sticky top-0 z-10 grid grid-cols-[56px,1.4fr,110px,60px,1.4fr,repeat(6,60px)] items-center border-b border-white/10 bg-[#101628]/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-white/70">
+          <span className="text-center">Icon</span>
+          <span>Persona</span>
+          <span className="text-center">Arcana</span>
+          <span className="text-center">Lv</span>
+          <span>Affinities</span>
           {statColumns.map((col) => (
-            <span key={col.key}>{col.label}</span>
+            <span key={col.key} className="text-center">
+              {col.label}
+            </span>
           ))}
         </div>
-      </div>
-      <div className="divide-y divide-white/5">
-        {personas.map((persona) => {
-          const isActive = selectedId === persona.id
-          return (
-            <button
-              key={persona.id}
-              type="button"
-              onClick={() => selectPersona(persona.id)}
-              className={`grid w-full grid-cols-[52px,1.2fr,110px,60px,1.1fr,1fr] items-center gap-3 px-3 py-2 text-left text-sm transition ${
-                isActive ? 'bg-white/5' : 'hover:bg-white/5'
-              }`}
-            >
-              <div className="flex justify-center">
-                <div className="h-9 w-9 overflow-hidden rounded border border-white/10 bg-black/40">
-                  {persona.image ? (
-                    <img
-                      src={persona.image}
-                      alt={persona.name}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-[10px] text-white/40">
-                      N/A
-                    </div>
-                  )}
+        <div className="divide-y divide-white/5">
+          {personas.map((persona) => {
+            const isActive = selectedId === persona.id
+            return (
+              <button
+                key={persona.id}
+                type="button"
+                onClick={() => selectPersona(persona.id)}
+                className={`grid w-full grid-cols-[56px,1.4fr,110px,60px,1.4fr,repeat(6,60px)] items-center px-3 py-2 text-left text-[13px] transition ${
+                  isActive ? 'bg-white/10' : 'hover:bg-white/5'
+                }`}
+              >
+                <div className="flex justify-center">
+                  <div className="h-10 w-10 overflow-hidden rounded border border-white/15 bg-black/40">
+                    {persona.image ? (
+                      <img
+                        src={persona.image}
+                        alt={persona.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-[10px] text-white/40">
+                        N/A
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-0.5">
-                <p className="font-semibold text-white">{persona.name}</p>
-                <p className="text-xs text-white/60 line-clamp-1">{persona.description ?? '—'}</p>
-              </div>
-              <div className="text-center text-xs text-white/80">{formatArcana(persona.arcana)}</div>
-              <div className="text-center text-xs text-white/80">Lv {persona.stats.level}</div>
-              <div className="flex flex-wrap gap-1 text-[11px] text-white/80">
-                {Object.entries(persona.affinities).map(([element, affinity]) => {
-                  const label =
-                    affinityLabels[affinity.toLowerCase()] ??
-                    affinity.replace(/\b\w/g, (char) => char.toUpperCase())
-                  return (
-                    <span
-                      key={element}
-                      className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5"
-                    >
-                      {formatElement(element)}: {label}
-                    </span>
-                  )
-                })}
-              </div>
-              <div className="grid grid-cols-6 gap-2 text-center text-[11px] text-white/80">
+                <div className="space-y-0.5">
+                  <p className="font-semibold text-white">{persona.name}</p>
+                  <p className="text-xs text-white/60 line-clamp-1">{persona.description ?? '—'}</p>
+                </div>
+                <div className="text-center text-xs uppercase tracking-[0.2em] text-white/70">
+                  {formatArcana(persona.arcana)}
+                </div>
+                <div className="text-center text-xs text-white/80">Lv {persona.stats.level}</div>
+                <div className="flex flex-wrap gap-1 text-[11px] text-white/80">
+                  {Object.entries(persona.affinities)
+                    .slice(0, 3)
+                    .map(([element, affinity]) => {
+                      const label =
+                        affinityLabels[affinity.toLowerCase()] ??
+                        affinity.replace(/\b\w/g, (char) => char.toUpperCase())
+                      return (
+                        <span
+                          key={element}
+                          className="rounded border border-white/15 bg-black/20 px-1.5 py-0.5"
+                        >
+                          {formatElement(element)}: {label}
+                        </span>
+                      )
+                    })}
+                </div>
                 {statColumns.map((col) => (
-                  <span key={col.key} className="rounded bg-black/25 px-2 py-1 font-mono text-xs">
+                  <span
+                    key={col.key}
+                    className="text-center font-mono text-xs text-white/90"
+                  >
                     {persona.stats[col.key as keyof typeof persona.stats]}
                   </span>
                 ))}
-              </div>
-            </button>
-          )
-        })}
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
