@@ -64,15 +64,15 @@ export function SearchControls() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/10 bg-[#11141d] p-4 shadow-[0_15px_40px_rgba(0,0,0,0.45)]"
+      className="rounded-md border border-white/10 bg-black/20 px-3 py-2"
     >
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <input
           type="text"
           value={filters.search ?? ''}
           onChange={(event) => setFilters({ search: event.target.value })}
           placeholder="Search Personas by name, arcana, or level..."
-          className="min-w-[220px] flex-1 rounded-md border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+          className="min-w-[220px] flex-1 rounded border border-white/10 bg-black/30 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
         />
 
         <select
@@ -82,7 +82,7 @@ export function SearchControls() {
               arcana: event.target.value || undefined,
             })
           }
-          className="w-40 rounded-md border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-neon/60 focus:outline-none"
+          className="w-40 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white focus:border-neon/60 focus:outline-none"
         >
           <option value="">Any Arcana</option>
           {ARCANA_OPTIONS.map((option) => (
@@ -104,7 +104,7 @@ export function SearchControls() {
               })
             }
             placeholder="Min Lv"
-            className="w-20 rounded-md border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+            className="w-20 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
           />
           <input
             type="number"
@@ -117,7 +117,7 @@ export function SearchControls() {
               })
             }
             placeholder="Max Lv"
-            className="w-20 rounded-md border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
+            className="w-20 rounded border border-white/10 bg-black/30 px-2.5 py-2 text-sm text-white placeholder:text-white/40 focus:border-neon/60 focus:outline-none"
           />
         </div>
 
@@ -125,14 +125,14 @@ export function SearchControls() {
           <button
             type="submit"
             disabled={isLoading}
-            className="rounded-md border border-neon/60 bg-neon/20 px-4 py-2 text-sm font-semibold text-neon transition hover:bg-neon/30 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded border border-neon/60 bg-neon/20 px-4 py-2 text-sm font-semibold text-neon transition hover:bg-neon/30 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isLoading ? 'Loading…' : 'Search'}
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="rounded-md border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40 hover:text-white"
+            className="rounded border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40 hover:text-white"
           >
             Reset
           </button>

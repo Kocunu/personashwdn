@@ -48,8 +48,8 @@ export function PersonaList() {
   ] as const
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30 shadow-[0_15px_40px_rgba(0,0,0,0.45)]">
-      <div className="grid grid-cols-[64px,1.2fr,120px,70px,1.1fr,1fr] items-center gap-3 border-b border-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60">
+    <div className="h-full overflow-auto rounded-md border border-white/10 bg-black/10">
+      <div className="sticky top-0 z-10 grid grid-cols-[52px,1.2fr,110px,60px,1.1fr,1fr] items-center gap-3 border-b border-white/10 bg-[#0b0f16]/90 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60 backdrop-blur">
         <span className="text-center">Icon</span>
         <span>Persona</span>
         <span className="text-center">Arcana</span>
@@ -69,12 +69,12 @@ export function PersonaList() {
               key={persona.id}
               type="button"
               onClick={() => selectPersona(persona.id)}
-              className={`grid w-full grid-cols-[64px,1.2fr,120px,70px,1.1fr,1fr] items-center gap-3 px-4 py-3 text-left text-sm transition ${
+              className={`grid w-full grid-cols-[52px,1.2fr,110px,60px,1.1fr,1fr] items-center gap-3 px-3 py-2 text-left text-sm transition ${
                 isActive ? 'bg-white/5' : 'hover:bg-white/5'
               }`}
             >
               <div className="flex justify-center">
-                <div className="h-12 w-12 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+                <div className="h-9 w-9 overflow-hidden rounded border border-white/10 bg-black/40">
                   {persona.image ? (
                     <img
                       src={persona.image}
@@ -112,7 +112,7 @@ export function PersonaList() {
               </div>
               <div className="grid grid-cols-6 gap-2 text-center text-[11px] text-white/80">
                 {statColumns.map((col) => (
-                  <span key={col.key} className="rounded bg-white/5 px-2 py-1 font-mono text-xs">
+                  <span key={col.key} className="rounded bg-black/25 px-2 py-1 font-mono text-xs">
                     {persona.stats[col.key as keyof typeof persona.stats]}
                   </span>
                 ))}

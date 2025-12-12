@@ -73,6 +73,9 @@ export const usePersonaStore = create<PersonaState>((set, get) => ({
       return { selectedId: state.personas[prevIndex].id, isDetailOpen: true }
     }),
   openDetail: () => set({ isDetailOpen: true }),
-  closeDetail: () => set({ isDetailOpen: false }),
-  toggleDetail: () => set((state) => ({ isDetailOpen: !state.isDetailOpen })),
+  closeDetail: () => set({ isDetailOpen: false, selectedId: null }),
+  toggleDetail: () =>
+    set((state) =>
+      state.isDetailOpen ? { isDetailOpen: false, selectedId: null } : { isDetailOpen: true },
+    ),
 }))

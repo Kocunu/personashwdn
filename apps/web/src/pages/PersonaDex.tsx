@@ -9,10 +9,11 @@ export function PersonaDexPage() {
   const selectNextPersona = usePersonaStore((state) => state.selectNextPersona)
   const selectPreviousPersona = usePersonaStore((state) => state.selectPreviousPersona)
   const selectedId = usePersonaStore((state) => state.selectedId)
+  const isDetailOpen = usePersonaStore((state) => state.isDetailOpen)
 
   useEffect(() => {
-    void loadPersonas();
-  }, [loadPersonas]);
+    void loadPersonas()
+  }, [loadPersonas])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -29,37 +30,41 @@ export function PersonaDexPage() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectNextPersona, selectPreviousPersona]);
+  }, [selectNextPersona, selectPreviousPersona])
 
   return (
-    <section className="space-y-8 px-6 py-8 md:px-8 md:py-10">
-      <div className="hero-banner spark-field rounded-3xl border border-white/5 bg-gradient-to-br from-midnight/60 via-black/40 to-transparent p-8 shadow-[0_30px_80px_rgba(5,7,15,0.8)]">
-        <div className="hero-banner__content space-y-4">
-          <p className="text-sm uppercase tracking-[0.6em] text-white/60">
-            Persona Archive
-          </p>
-          <h2 className="mt-2 font-display text-4xl text-white md:text-5xl">
-            PersonaDex Search Console
-          </h2>
-          <p className="mt-4 max-w-3xl text-lg text-white/70">
-            Filter demons by arcana, level, and keywords to explore their battle-ready stats.
-            Every response is served straight from our Bun/Elysia backend, making this UI a live preview
-            of the data set that will power the future battle engine.
-          </p>
+    <section className="px-4 py-3 md:px-8 md:py-4">
+      {/** mobile overlay lives here so the layout stays single-column on small screens */}
+      <PersonaDetailPanel renderDesktop={false} />
+
+      <div className="rounded-md border border-white/10 bg-[#0b0f16]/70 shadow-[0_25px_80px_rgba(0,0,0,0.55)] lg:h-[calc(100vh-200px)]">
+        <div
+          className={`grid min-h-0 items-stretch lg:h-full ${
+            selectedId && isDetailOpen ? 'lg:grid-cols-[1.05fr,1fr]' : 'lg:grid-cols-1'
+          }`}
+        >
+          <div
+            className={`flex min-h-0 flex-col border-b border-white/10 p-3 lg:border-b-0 ${
+              selectedId && isDetailOpen ? 'lg:border-r lg:border-white/10' : ''
+            }`}
+          >
+            <div className="shrink-0">
+              <SearchControls />
+            </div>
+            <div className="mt-2 min-h-0 flex-1">
+              <PersonaList />
+            </div>
+          </div>
+
+          {selectedId && isDetailOpen ? (
+            <div className="hidden min-h-0 p-3 lg:block">
+              <div className="h-full overflow-auto">
+                <PersonaDetailPanel />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
-
-      <div className="space-y-4">
-        <SearchControls />
-        {selectedId ? (
-          <div className="grid gap-4 xl:grid-cols-[1.4fr,1fr] items-start">
-            <PersonaList />
-            <PersonaDetailPanel />
-          </div>
-        ) : (
-          <PersonaList />
-        )}
-      </div>
     </section>
-  );
+  )
 }
